@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: 'Documentation for Api Localization'
+  description: 'This documentation is intended to demonstrate the use of the API and how to consume it in your projects'
+  termsOfService: ''
+  contact:
+    email: celunico43@gmail.com
+  version: 1.0.0
+paths:
+  '/api/localizations/{id}':
+    get:
+      tags:
+        - localizations
+      summary: 'Find localization by ID'
+      description: 'Returns a single localization'
+      operationId: id
+      parameters:
+        - name: id
+          in: path
+          description: 'ID of localization to return'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/localization'
+        '404':
+          description: 'Localization not found'
+
+  /api/localizations:
+    post:
+      tags:
+        - localization
+      summary: 'Add a new pet to the store'
+      operationId: id
+      requestBody:
+        $ref: '#/components/requestBodies/localization'
+      responses:
+        '422':
+          description: 'Missing Data'
+
+components:
+  schemas:
+    localization:
+      title: 'Localization model'
+      description: 'Localization model'
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          title: Latitude
+          description: Latitude
+          type: string
+          format: string
+        longitude:
+          title: Longitude
+          description: Longitude
+          type: string
+          format: string
+
+  requestBodies:
+    localization:
+      description: 'Localization object that needs to be added to the databases'
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/localization'

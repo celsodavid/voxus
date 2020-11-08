@@ -1,0 +1,51 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: "3.1"
+services:
+
+    mysql:
+      image: mysql:5.7
+      container_name: voxus-mysql
+      working_dir: /application
+      volumes:
+        - .:/application
+      environment:
+        - MYSQL_ROOT_PASSWORD=voxus
+        - MYSQL_DATABASE=voxus
+        - MYSQL_USER=admin
+        - MYSQL_PASSWORD=voxus
+      ports:
+        - "3306:3306"
+      networks:
+        - voxus
+
+    webserver:
+      image: nginx:alpine
+      container_name: voxus-webserver
+      working_dir: /application
+      volumes:
+          - .:/application
+          - ./phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      ports:
+       - "8000:80"
+      depends_on:
+        - mysql
+      networks:
+        - voxus
+
+    php-fpm:
+      build: phpdocker/php-fpm
+      container_name: voxus-php-fpm
+      working_dir: /application
+      volumes:
+        - .:/application
+        - ./phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
+      depends_on:
+        - mysql
+      networks:
+        - voxus
+
+networks:
+  voxus:
+    driver: bridge
